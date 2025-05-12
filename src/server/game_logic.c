@@ -253,10 +253,10 @@ int server_bet(game_state_t *game) {
                     game->player_status[game->current_player] = PLAYER_FOLDED;
                     active_count--;
                     response_packet.packet_type = ACK;
-                    if(game->round_stage != ROUND_SHOWDOWN) {
-                        game->player_hands[game->current_player][0] = NOCARD;
-                        game->player_hands[game->current_player][1] = NOCARD;
-                    }
+                    // if(game->round_stage != ROUND_SHOWDOWN) {
+                    //     game->player_hands[game->current_player][0] = NOCARD;
+                    //     game->player_hands[game->current_player][1] = NOCARD;
+                    // }
                 } else {
                     response_packet.packet_type = NACK;
                 }

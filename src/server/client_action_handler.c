@@ -41,7 +41,7 @@ void build_info_packet(game_state_t *game, player_id_t pid, server_packet_t *out
     }
 
     for(int i = 0; i < MAX_COMMUNITY_CARDS; i++) { //get community cards for this packet
-        if(game->community_cards[i] == -1) break;
+        if(game->community_cards[i] == NOCARD) break;
         out->info.community_cards[i] = game->community_cards[i];
     }
 
