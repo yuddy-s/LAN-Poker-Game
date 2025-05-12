@@ -457,70 +457,71 @@ int evaluate_hand(game_state_t *game, player_id_t pid) {
         suit_ranks[suit][suit_counts[suit]++] = rank;
     }
 
-    //now time to check hand order 
+    //now time to check hand order
+
     //STRAIGHT FLUSH
-    for(int s = 0; s < 4; s++) {
-        if(suit_counts[s] >=5) { //need 5 cards of same suit for straight flush
-            int consecutive = 1;
-            for(int j = 1; j < suit_counts[s]; j++) {
-                if(suit_ranks[s][j] == suit_ranks[s][j-1] + 1) {
-                    consecutive++;
-                    if(consecutive == 5) {
-                        return 30; //STRAIGHT FLUSH
+        for(int s = 0; s < 4; s++) {
+            if(suit_counts[s] >=5) { //need 5 cards of same suit for straight flush
+                int consecutive = 1;
+                for(int j = 1; j < suit_counts[s]; j++) {
+                    if(suit_ranks[s][j] == suit_ranks[s][j-1] + 1) {
+                        consecutive++;
+                        if(consecutive == 5) {
+                            return 30; //STRAIGHT FLUSH
+                        }
+                    } else {
+                        consecutive = 1;
                     }
-                } else {
-                    consecutive = 1;
+                }
+                if(consecutive == 4 && suit_ranks[s][0] == TWO && suit_ranks[s][suit_counts[s] - 1] == ACE) {
+                    return 30; //STRAIGHT FLUSH
                 }
             }
-            if(consecutive == 4 && suit_ranks[s][0] == TWO && suit_ranks[s][suit_counts[s] - 1] == ACE) {
-                return 30; //STRAIGHT FLUSH
+        }
+
+    //4 OF A KIND
+        int rank_count[13] = {0};
+                                            
+        for(int i = 0; i < 2; i++) {           //count ranks from player hand
+            rank_count[RANK(game->player_hands[pid][i])]++;
+        }
+
+
+        //count ranks from community
+        for(int i = 0; i < MAX_COMMUNITY_CARDS; i++) {
+            rank_count[RANK(game->community_cards[i])]++;
+        }
+
+        //check for four of a kind
+        for(int r = 0; r < 13; r++) {
+            if(rank_count[r] == 4) {
+                return 29;
             }
         }
-    }
-
-    //4 of a kind
-    int rank_count[13] = {0};
-    //count ranks from player hand
-    for(int i = 0; i < 2; i++) {
-        rank_count[RANK(game->player_hands[pid][i])]++;
-    }
-
-
-    //count ranks from community
-    for(int i = 0; i < MAX_COMMUNITY_CARDS; i++) {
-        rank_count[RANK(game->community_cards[i])]++;
-    }
-
-    //check for four of a kind
-    for(int r = 0; r < 13; r++) {
-        if(rank_count[r] == 4) {
-            return 29;
-        }
-    }
 
     //FULL HOUSE
-    int three_of_a_kind = -1;
-    int pair = -1;
-    for(int r = 12; r >=0; r--) {
-        if(rank_count[r] >= 3 && three_of_a_kind == -1) {
-            three_of_a_kind = r;
-            rank_count[r] -= 3;
-            break;
+        int three_of_a_kind = -1;
+        int pair = -1;
+        for(int r = 12; r >=0; r--) {
+            if(rank_count[r] >= 3 && three_of_a_kind == -1) {
+                three_of_a_kind = r;
+                rank_count[r] -= 3;
+                break;
+            }
         }
-    }
-    for(int r = 12; r >=0; r--) {
-        if(rank_count[r] >= 2) {
-            pair = r;
-            break;
+        for(int r = 12; r >=0; r--) {
+            if(rank_count[r] >= 2) {
+                pair = r;
+                break;
+            }
         }
-    }
-    if(three_of_a_kind != -1 && pair != -1) {
-        return 28;
-    } 
-    //reset this to correct rank count if no full house
-    if(three_of_a_kind != -1) {
-        rank_count[three_of_a_kind] += 3;
-    }
+        if(three_of_a_kind != -1 && pair != -1) {
+            return 28;
+        } 
+        //reset this to correct rank count if no full house
+        if(three_of_a_kind != -1) {
+            rank_count[three_of_a_kind] += 3;
+        }
 
     //FLUSH
     for(int s = 0; s < 4; s++) {
@@ -528,6 +529,41 @@ int evaluate_hand(game_state_t *game, player_id_t pid) {
             return 27;
         }
     }
+
+
+    //STRAIGHT
+    int sorted_ranks[7];
+    int unique_count = 0;
+
+    sorted_ranks[unique_count++] = RANK(hand[0]);
+    for(int i = 1; i < 7; i++) {
+        int rank = RANK(hand[i]);
+        if(rank != RANK(hand[i - 1])) {
+            sorted_ranks[unique_count++] = rank;
+        }
+    }
+
+    int consecutive = 1;
+    for(int j = 1; j < unique_count; j++) {
+        if(sorted_ranks[j] == sorted_ranks[j - 1] + 1) {
+            consecutive++;
+            if(consecutive == 5) {
+                return 26; //STRAIGHT
+            }
+        } else {
+            consecutive = 1; //reset
+        }
+    }
+
+    if(unique_count >= 5 &&
+    sorted_ranks[0] == ACE &&
+    sorted_ranks[unique_count - 1] == TWO &&
+    sorted_ranks[unique_count - 2] == THREE &&
+    sorted_ranks[unique_count - 3] == FOUR &&
+    sorted_ranks[unique_count - 4] == FIVE) {
+        return 26; //ACE low STRAIGHT
+    }
+
 
     //THREE OF A KIND = 25
     for(int r = 0; r < 13; r++) {
