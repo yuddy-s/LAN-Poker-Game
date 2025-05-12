@@ -92,15 +92,17 @@ int main(int argc, char **argv) {
         //round is set to showdown early if only one player ready
 
         // FLOP BETTING
+        for(int i = 0; i < MAX_PLAYERS; i++) {
+            game.current_bets[i] = 0; //Reset bets after PREFLOP
+        }
         if(game.round_stage != ROUND_SHOWDOWN) {
             for (int i = 0; i < MAX_PLAYERS; i++) {
+
                 if (game.player_status[i] != PLAYER_LEFT) {
                     server_packet_t info_packet;
                     build_info_packet(&game, i, &info_packet);
                     send(game.sockets[i], &info_packet, sizeof(server_packet_t), 0);
                 }
-
-                game.current_bets[i] = 0; //Reset bets after FLOP
             }
             game.highest_bet = 0;
             server_bet(&game);
@@ -113,15 +115,18 @@ int main(int argc, char **argv) {
         }
 
         // TURN BETTING
+        for(int i = 0; i < MAX_PLAYERS; i++) {
+            game.current_bets[i] = 0; //Reset bets after FLOP
+        }
         if(game.round_stage != ROUND_SHOWDOWN) {
             for (int i = 0; i < MAX_PLAYERS; i++) {
+
                 if (game.player_status[i] != PLAYER_LEFT) {
                     server_packet_t info_packet;
                     build_info_packet(&game, i, &info_packet);
                     send(game.sockets[i], &info_packet, sizeof(server_packet_t), 0);
                 }
 
-                game.current_bets[i] = 0; //Reset bets after TURN
             }
             game.highest_bet = 0;
             server_bet(&game);
@@ -134,6 +139,9 @@ int main(int argc, char **argv) {
         }
 
         // RIVER BETTING
+        for(int i = 0; i < MAX_PLAYERS; i++) {
+            game.current_bets[i] = 0; //Reset bets after TURN
+        }
         if(game.round_stage != ROUND_SHOWDOWN) {
             for (int i = 0; i < MAX_PLAYERS; i++) {
                 if (game.player_status[i] != PLAYER_LEFT) {
@@ -150,6 +158,9 @@ int main(int argc, char **argv) {
         }
 
         // ROUND_SHOWDOWN
+        for(int i = 0; i < MAX_PLAYERS; i++) {
+            game.current_bets[i] = 0; //Reset bets before end
+        }
         game.round_stage = ROUND_SHOWDOWN;
         server_end(&game);
 

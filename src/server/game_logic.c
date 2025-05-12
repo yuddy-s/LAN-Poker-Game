@@ -293,6 +293,15 @@ int server_bet(game_state_t *game) {
         }
         
         if(check_betting_end(game) && iterations >= active_count) {
+            int z = 1;
+            //find first player after dealer again
+            for(int i = (game->dealer_player + 1) % MAX_PLAYERS; z < MAX_PLAYERS; i = (i+1) % MAX_PLAYERS) {
+                if(game->player_status[i] == PLAYER_ACTIVE) {
+                    game->current_player = i;
+                    break;
+                }
+                z++;
+            }
             break;
         }
         iterations++;
