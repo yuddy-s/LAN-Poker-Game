@@ -68,7 +68,7 @@ void build_end_packet(game_state_t *game, player_id_t winner, server_packet_t *o
 
     //stacks
     for(int i = 0; i < MAX_PLAYERS; i++) {
-        out->end.player_stacks[i] = 100;
+        out->end.player_stacks[i] = game->player_stacks[i];
     }
 
     //fill dat shi

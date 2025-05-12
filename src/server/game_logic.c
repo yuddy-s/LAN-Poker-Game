@@ -66,6 +66,9 @@ void reset_game_state(game_state_t *game) {
     game->round_stage = ROUND_INIT;
     for(int i = 0; i < MAX_COMMUNITY_CARDS; i++) {
         game->community_cards[i] = NOCARD;
+    }
+
+    for(int i = 0; i < MAX_PLAYERS; i++) {
         game->current_bets[i] = 0;
         game->player_hands[i][0] = NOCARD;
         game->player_hands[i][1] = NOCARD;

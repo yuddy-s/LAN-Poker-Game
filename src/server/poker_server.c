@@ -95,9 +95,9 @@ int main(int argc, char **argv) {
         for(int i = 0; i < MAX_PLAYERS; i++) {
             game.current_bets[i] = 0; //Reset bets after PREFLOP
         }
+
         if(game.round_stage != ROUND_SHOWDOWN) {
             for (int i = 0; i < MAX_PLAYERS; i++) {
-
                 if (game.player_status[i] != PLAYER_LEFT) {
                     server_packet_t info_packet;
                     build_info_packet(&game, i, &info_packet);
