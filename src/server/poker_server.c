@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
         for(int i = 0; i < MAX_PLAYERS; i++) {
             game.current_bets[i] = 0; //Reset bets after PREFLOP
         }
-
+        game.highest_bet = 0;
         if(game.round_stage != ROUND_SHOWDOWN) {
             for (int i = 0; i < MAX_PLAYERS; i++) {
                 if (game.player_status[i] != PLAYER_LEFT) {
@@ -104,7 +104,6 @@ int main(int argc, char **argv) {
                     send(game.sockets[i], &info_packet, sizeof(server_packet_t), 0);
                 }
             }
-            game.highest_bet = 0;
             server_bet(&game);
         }
 
@@ -118,6 +117,7 @@ int main(int argc, char **argv) {
         for(int i = 0; i < MAX_PLAYERS; i++) {
             game.current_bets[i] = 0; //Reset bets after FLOP
         }
+        game.highest_bet = 0;
         if(game.round_stage != ROUND_SHOWDOWN) {
             for (int i = 0; i < MAX_PLAYERS; i++) {
 
@@ -128,7 +128,6 @@ int main(int argc, char **argv) {
                 }
 
             }
-            game.highest_bet = 0;
             server_bet(&game);
         }
 
@@ -142,6 +141,7 @@ int main(int argc, char **argv) {
         for(int i = 0; i < MAX_PLAYERS; i++) {
             game.current_bets[i] = 0; //Reset bets after TURN
         }
+        game.highest_bet = 0;
         if(game.round_stage != ROUND_SHOWDOWN) {
             for (int i = 0; i < MAX_PLAYERS; i++) {
                 if (game.player_status[i] != PLAYER_LEFT) {
@@ -153,7 +153,6 @@ int main(int argc, char **argv) {
                 game.current_bets[i] = 0; //Reset bets after RIVER
             }
 
-            game.highest_bet = 0;
             server_bet(&game);
         }
 
@@ -161,6 +160,7 @@ int main(int argc, char **argv) {
         for(int i = 0; i < MAX_PLAYERS; i++) {
             game.current_bets[i] = 0; //Reset bets before end
         }
+        game.highest_bet = 0;
         game.round_stage = ROUND_SHOWDOWN;
         server_end(&game);
 
