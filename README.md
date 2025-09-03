@@ -1,6 +1,10 @@
+![TEXAS HOLD EM](./texas-hold-em.jpg)
+
 # LAN Poker Game
 
-**Language:** C  
+
+
+**Language:** C  ww
 
 ---
 
